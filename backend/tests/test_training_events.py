@@ -2,7 +2,6 @@ from pathlib import Path
 from uuid import uuid4
 
 import pytest
-
 from app.config import Settings
 from app.core.dictation_service import DictationService
 from app.core.materials import MaterialStore
@@ -11,6 +10,7 @@ from app.core.states import MaterialState, TransitionError
 from app.core.training_events import TrainingEventService
 from app.db.connection import Database
 from app.preprocess.material import MaterialPreprocessor, TimestampedSentence
+
 from tests.fixtures import make_settings, make_sine_wav
 
 
@@ -82,7 +82,7 @@ def test_training_event_service_reaches_full_completion(tmp_path: Path) -> None:
     assert last["transition_type"] == "PART_COMPLETED"
     assert last["next_state"] == MaterialState.DICTATION_PART_2.value
 
-    for part_no, offset in ((2, 3), (3, 6)):
+    for _part_no, offset in ((2, 3), (3, 6)):
         last = None
         for index in range(offset, offset + 3):
             last = dictation.submit(

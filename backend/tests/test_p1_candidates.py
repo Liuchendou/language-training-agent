@@ -4,11 +4,8 @@
 from __future__ import annotations
 
 from pathlib import Path
-from uuid import uuid4
 
 import pytest
-from fastapi.testclient import TestClient
-
 from app import main as main_module
 from app.adapters.speech import RecognizedSegment
 from app.core.audio_quality import AudioQualityAnalyzer, QualityThresholds
@@ -17,10 +14,12 @@ from app.core.material_preparation import (
     CANDIDATE_EXPIRED,
     CANDIDATE_NOT_SELECTABLE,
     IDEMPOTENCY_CONFLICT,
-    MaterialSelectionError,
     MaterialPreparationService,
+    MaterialSelectionError,
 )
 from app.db.connection import Database
+from fastapi.testclient import TestClient
+
 from tests.fixtures import make_database, make_settings, make_sine_wav
 
 # Test uses a 1-2 minute band so synthetic WAVs are cheap; the production

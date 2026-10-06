@@ -1,11 +1,10 @@
 from pathlib import Path
 
 import pytest
-
-from app.config import Settings
 from app.core.learning_time import LearningTimeService
 from app.core.weekly import WeeklyAssessmentService
 from app.db.connection import Database
+
 from tests.fixtures import make_settings
 
 

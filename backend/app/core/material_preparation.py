@@ -10,7 +10,6 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from datetime import UTC, datetime
-from uuid import uuid4
 
 from app.config import Settings
 from app.core.materials import MaterialStore

@@ -12,7 +12,6 @@ import hashlib
 import inspect
 from collections.abc import Callable
 from datetime import UTC, datetime, timedelta
-from pathlib import Path
 from uuid import uuid4
 
 from app.adapters.speech import WhisperASRProvider
@@ -108,7 +107,9 @@ class MaterialCandidateService:
 
             article_id = article_url.rstrip("/").split("/")[-1].replace(".html", "")
             try:
-                wav_path = self._retry(lambda: self.provider.download_audio(mp3_url, f"p1-{article_id}", work_dir))
+                wav_path = self._retry(
+                    self.provider.download_audio, mp3_url, f"p1-{article_id}", work_dir
+                )
             except Exception:
                 rejected["download_failed"] = rejected.get("download_failed", 0) + 1
                 continue
@@ -117,7 +118,7 @@ class MaterialCandidateService:
             if quality.failure_code:
                 # Quality check itself failed (unreadable audio): bounded retry.
                 try:
-                    quality = self._retry(lambda: self.quality.analyze(str(wav_path)))
+                    quality = self._retry(self.quality.analyze, str(wav_path))
                 except Exception:
                     rejected["quality_failed"] = rejected.get("quality_failed", 0) + 1
                     continue
@@ -130,7 +131,7 @@ class MaterialCandidateService:
                 continue
 
             try:
-                segments = self._retry(lambda: self.asr.transcribe(str(wav_path)))
+                segments = self._retry(self.asr.transcribe, str(wav_path))
             except Exception:
                 rejected["transcribe_failed"] = rejected.get("transcribe_failed", 0) + 1
                 continue
@@ -254,14 +255,19 @@ class MaterialCandidateService:
                 ),
             )
 
-    def _retry(self, operation: Callable[[], object]) -> object:
-        """Bounded retry with linear backoff; raises after RETRY_LIMIT tries."""
+    def _retry(self, operation: Callable[..., object], *args: object) -> object:
+        """Bounded retry with linear backoff; raises after RETRY_LIMIT tries.
+
+        Takes the callable plus its arguments instead of a closure so that
+        per-iteration values are bound eagerly (a lambda here would capture
+        the loop variable and only read it when the retry invokes it).
+        """
         import time as _time
 
         last_error: Exception | None = None
         for attempt in range(RETRY_LIMIT + 1):
             try:
-                return operation()
+                return operation(*args)
             except Exception as exc:  # provider/quality/transcription failures
                 last_error = exc
                 if attempt < RETRY_LIMIT:

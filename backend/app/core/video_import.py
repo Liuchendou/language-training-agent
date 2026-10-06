@@ -23,12 +23,20 @@ from dataclasses import dataclass, field
 from datetime import UTC, datetime
 
 from app.adapters.speech import RecognizedSegment
-from app.adapters.web_material import align_sentences, split_sentences
 from app.config import Settings
-from app.core.media_tools import MediaToolError, resolve_ffmpeg, resolve_whisper_model, resolve_ytdlp
 from app.core.materials import MaterialExistsError, MaterialStore
+from app.core.media_tools import (
+    MediaToolError,
+    resolve_ffmpeg,
+    resolve_whisper_model,
+    resolve_ytdlp,
+)
 from app.db.connection import Database
-from app.preprocess.material import MaterialPreprocessError, MaterialPreprocessor, TimestampedSentence
+from app.preprocess.material import (
+    MaterialPreprocessError,
+    MaterialPreprocessor,
+    TimestampedSentence,
+)
 
 
 class VideoImportError(RuntimeError):
@@ -350,7 +358,7 @@ class VideoImportService:
             )
         except VideoImportError as exc:
             self._fail(job, str(exc))
-        except Exception as exc:  # noqa: BLE001 - surfaced to the user, never swallowed
+        except Exception as exc:
             self._fail(job, f"导入失败：{exc}")
 
     def _set(self, job: ImportJob, **changes) -> None:
@@ -494,7 +502,7 @@ class VideoImportService:
                     self._set(job, message=f"正在加载本地语音模型 {model_size}…")
                 try:
                     model = WhisperModel(model_ref, device="cpu", compute_type="int8")
-                except Exception as exc:  # noqa: BLE001
+                except Exception as exc:
                     raise VideoImportError(
                         f"语音模型 {model_size} 加载失败：{exc}"
                     ) from exc
@@ -504,7 +512,7 @@ class VideoImportService:
             audio = _read_wav_samples(wav_path)
         except VideoImportError:
             raise
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             raise VideoImportError(f"读取训练音频失败：{exc}") from exc
 
         try:
@@ -531,7 +539,7 @@ class VideoImportService:
                         progress=min(1.0, segment.end / duration),
                         message=f"正在识别语音… {min(100, segment.end / duration * 100):.0f}%",
                     )
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             raise VideoImportError(f"语音识别失败：{exc}") from exc
 
         if not collected:

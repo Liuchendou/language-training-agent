@@ -10,9 +10,9 @@ import threading
 from pathlib import Path
 from uuid import uuid4
 
+from app import main as main_module
 from fastapi.testclient import TestClient
 
-from app import main as main_module
 from tests.fixtures import DEFAULT_SENTENCES, create_material, make_database, make_settings
 
 

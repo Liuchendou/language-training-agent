@@ -1,7 +1,6 @@
 from pathlib import Path
 
 import pytest
-
 from app.config import Settings
 from app.core.progress import TrainingProgressStore
 from app.core.states import MaterialState, TransitionError

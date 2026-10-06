@@ -7,15 +7,15 @@ from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 import pytest
-
 from app.core.difficulty_progression import (
     COOLDOWN_DAYS,
+    STABLE_WEEKS_REQUIRED,
     DifficultyError,
     DifficultyProgressionService,
-    STABLE_WEEKS_REQUIRED,
 )
 from app.core.weekly import WeeklyAssessmentService
 from app.db.connection import Database
+
 from tests.fixtures import make_database, make_settings
 
 NOW = datetime(2026, 8, 26, 10, 0, 0, tzinfo=UTC)
@@ -197,9 +197,8 @@ def test_week_gap_resets_sequence(tmp_path: Path) -> None:
 
 
 def test_api_profile_and_decision_round_trip(tmp_path: Path) -> None:
-    from fastapi.testclient import TestClient
-
     from app import main as main_module
+    from fastapi.testclient import TestClient
 
     database, clock, difficulty, weekly = _setup(tmp_path)
     for index in range(1, 9):

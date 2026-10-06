@@ -3,8 +3,8 @@ from __future__ import annotations
 import re
 import unicodedata
 from dataclasses import dataclass
-from enum import StrEnum
 from difflib import SequenceMatcher
+from enum import StrEnum
 
 
 class DictationErrorType(StrEnum):
@@ -40,19 +40,7 @@ _EQUIVALENTS = {
     "don't": "do not",
 }
 
-_IRREGULAR_FORMS = {
-    form: "be" for form in ("am", "is", "are", "was", "were", "been", "being")
-} | {
-    form: "go" for form in ("go", "goes", "went", "gone", "going")
-} | {
-    form: "do" for form in ("do", "does", "did", "done", "doing")
-} | {
-    form: "have" for form in ("have", "has", "had", "having")
-} | {
-    form: "take" for form in ("take", "takes", "took", "taken", "taking")
-} | {
-    form: "write" for form in ("write", "writes", "wrote", "written", "writing")
-}
+_IRREGULAR_FORMS = dict.fromkeys(("am", "is", "are", "was", "were", "been", "being"), "be") | dict.fromkeys(("go", "goes", "went", "gone", "going"), "go") | dict.fromkeys(("do", "does", "did", "done", "doing"), "do") | dict.fromkeys(("have", "has", "had", "having"), "have") | dict.fromkeys(("take", "takes", "took", "taken", "taking"), "take") | dict.fromkeys(("write", "writes", "wrote", "written", "writing"), "write")
 
 
 def normalize_for_match(text: str) -> str:
@@ -87,7 +75,9 @@ def _classify(expected: str, actual: str) -> DictationErrorType:
         return DictationErrorType.ACTIVE_BLANK
     if _same_word_family(expected, actual) and expected != actual:
         return DictationErrorType.WORD_FORM
-    distance = int(round((1 - SequenceMatcher(None, expected, actual).ratio()) * max(len(expected), len(actual))))
+    distance = round(
+        (1 - SequenceMatcher(None, expected, actual).ratio()) * max(len(expected), len(actual))
+    )
     if expected[:1] == actual[:1] and distance <= (1 if max(len(expected), len(actual)) <= 5 else 2):
         return DictationErrorType.SPELLING
     return DictationErrorType.MISHEARD

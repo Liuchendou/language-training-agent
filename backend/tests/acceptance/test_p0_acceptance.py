@@ -12,9 +12,9 @@ from pathlib import Path
 from uuid import uuid4
 
 import pytest
+from app import main as main_module
 from fastapi.testclient import TestClient
 
-from app import main as main_module
 from tests.fixtures import DEFAULT_SENTENCES, make_settings, make_sine_wav
 
 REFERENCE = [(2.0, 12000.0), (0.5, 0.0)]

@@ -1,5 +1,17 @@
-fastapi>=0.115,<1
-uvicorn[standard]>=0.34,<1
-pytest>=8,<9
-httpx>=0.28,<1
+# LLA 运行必需依赖
+#
+# 版本与 2026-10-06 本机实测通过的 .venv 一致（Python 3.13.9 / Windows）。
+# 安装：
+#   .venv\Scripts\python.exe -m pip install -r requirements.txt
+# 国内网络慢时可加镜像：
+#   -i https://mirrors.aliyun.com/pypi/simple/ --trusted-host mirrors.aliyun.com
 
+# --- Web 服务：服务启动与训练主链路 ---
+fastapi==0.142.2
+uvicorn[standard]==0.54.0
+
+# --- URL 视频导入链路：yt-dlp 下载 -> ffmpeg 转码 -> faster-whisper 本地 ASR 句级时间戳 ---
+# 缺这三项时服务仍能启动，但「贴链接导入」与自动搜索素材会失败。
+numpy==2.5.3
+faster-whisper==1.2.1
+yt-dlp==2026.8.19

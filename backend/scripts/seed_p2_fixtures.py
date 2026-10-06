@@ -14,20 +14,20 @@ from __future__ import annotations
 import argparse
 import json
 import sys
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, datetime
 from pathlib import Path
 from uuid import uuid4
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "backend"))
 
-from app.config import Settings  # noqa: E402
-from app.core.dictation_service import DictationService  # noqa: E402
-from app.core.difficulty_progression import DifficultyProgressionService  # noqa: E402
-from app.core.materials import MaterialStore  # noqa: E402
-from app.core.training_events import TrainingEventService  # noqa: E402
-from app.core.weekly import WeeklyAssessmentService  # noqa: E402
-from app.db.connection import Database  # noqa: E402
-from app.preprocess.material import MaterialPreprocessor, TimestampedSentence  # noqa: E402
+from app.config import Settings
+from app.core.dictation_service import DictationService
+from app.core.difficulty_progression import DifficultyProgressionService
+from app.core.materials import MaterialStore
+from app.core.training_events import TrainingEventService
+from app.core.weekly import WeeklyAssessmentService
+from app.db.connection import Database
+from app.preprocess.material import MaterialPreprocessor, TimestampedSentence
 
 MATERIALS = [
     {

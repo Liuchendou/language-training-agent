@@ -88,3 +88,21 @@ Skipped: 0
 - ⚠️ 非阻塞限制逐项列于 §E，均不影响主链路训练闭环，且有明确的 P1 行动项。
 
 **标记：`p0-accepted`**（2026-08-26）
+
+---
+
+## G. 勘误与后续变更（2026-10-06 追加）
+
+本节仅追加记录本报告落笔之后发生的变化。**§A–§F 的原始记录与结论不改写**，以保留当时的验收依据。
+
+| 项 | 报告原文（2026-08-26） | 2026-10-06 实测 |
+|---|---|---|
+| 后端测试 | §B/§C 记录 `62 passed` | **`128 passed, 1 warning`**（P1/P2 测试已加入，原表未回写） |
+| lint / typecheck | §E #5「未配置运行链」 | 已闭环：ruff `0.16.10` 对 `backend` **零告警**（规则集锁定于 `pyproject.toml` 的 `[tool.ruff.lint]`）；mypy `2.4.0` 已接入 `backend/app`，存在存量告警，按「报警不阻断」处理 |
+| Python 运行时 | §A 记为 3.12 | `.venv` 实为 **3.13.9**（由 `D:\ProgramData\anaconda3` 创建） |
+| 仓库根目录 | `D:\CODEX\LLA` | 已失效，现为 `E:\Software\LLA-master\LLA-master`（见 `docs/engineering-constraints.md` §1） |
+| 版本控制 | 无 git 仓库 | 已建仓：`https://github.com/Liuchendou/language-training-agent`，默认分支 `main` |
+| 素材现状 | §A 断言 `preset-002`《The Story of Rain》166 句、真实素材 `web-6me-170316`（BBC） | `preset-002` 仅由 `backend/scripts/generate_preset_material2.py` 按需生成；`web-6me-170316` 在本机不存在。`data/language_training.sqlite3` 的 `materials` 表当前为 **0 行**（本地素材库为空） |
+
+仍未处理（非本次范围）：`.env.example` 缺失；`Settings.whisper_model_dir` 不读取 `LTA_WHISPER_MODEL_DIR`（本报告 F6 同源问题）；`tools/` 已加入 `.gitignore`（444 MB 二进制不入库）。
+

@@ -15,13 +15,11 @@ from __future__ import annotations
 import re
 import subprocess
 import urllib.request
-from dataclasses import dataclass, field
 from pathlib import Path
 
 from app.adapters.speech import SpeechRecognitionProvider, WhisperASRProvider
 from app.adapters.web_material import (
     MaterialSource,
-    WebMaterialProvider,
     align_sentences,
     split_sentences,
 )

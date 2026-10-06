@@ -8,10 +8,10 @@ from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 import pytest
-
 from app.core.memory_deepening import DEFAULT_THRESHOLDS, MemoryConfigError, MemoryDeepeningService
 from app.db.connection import Database
-from tests.fixtures import DEFAULT_SENTENCES, make_database, make_settings
+
+from tests.fixtures import DEFAULT_SENTENCES, make_database
 
 NOW = datetime(2026, 8, 26, 10, 0, 0, tzinfo=UTC)
 
@@ -216,7 +216,7 @@ def test_target_aggregate_exposes_confidence(tmp_path: Path) -> None:
     service.build_episodes("default")
     service.save_config("default", short_days=14, long_days=56, min_episodes=3, min_dates=2)
     result = service.read_memory("default")
-    lazy = [t for t in result["targets"] if t["target"] == "lazy"][0]
+    lazy = next(t for t in result["targets"] if t["target"] == "lazy")
     # 2/3 episodes + 2/2 dates -> 0.5*0.667 + 0.5*1.0 = 0.83.
     assert lazy["confidence"] == pytest.approx(0.83, abs=0.01)
     assert 0.0 <= lazy["confidence"] <= 1.0
@@ -265,7 +265,7 @@ def test_classification_short_vs_long_term(tmp_path: Path) -> None:
     classifications = {t["target"]: t["difficulty_classification"] for t in result["targets"]}
     assert classifications.get("lazy") == "SHORT_TERM_DIFFICULT", classifications
     # Thresholds shown beside every classification.
-    sample = [t for t in result["targets"] if t["target"] == "lazy"][0]
+    sample = next(t for t in result["targets"] if t["target"] == "lazy")
     assert sample["thresholds_applied"]["short_days"] == 14
     assert sample["thresholds_applied"]["config_version"] == "1.0"
 

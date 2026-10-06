@@ -11,7 +11,6 @@ targets may still qualify as difficulty evidence.
 from __future__ import annotations
 
 import json
-import re
 from datetime import UTC, datetime, timedelta
 from typing import Any
 from uuid import uuid4

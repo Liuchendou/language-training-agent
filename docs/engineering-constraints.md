@@ -7,10 +7,11 @@
 LLA 标准仓库根目录固定为：
 
 ```
-D:\CODEX\LLA
+E:\Software\LLA-master\LLA-master
 ```
 
-Windows 文件系统大小写不敏感，`D:\codex\LLA` 与之等价。
+> 2026-10-06 迁移记录：原根目录 `D:\CODEX\LLA` 已失效，现为 `E:\Software\LLA-master\LLA-master`；
+> 该目录已建立 git 仓库，远端 `https://github.com/Liuchendou/language-training-agent`，默认分支 `main`。
 
 ## 2. 每次开发/验收前必做检查
 
@@ -24,7 +25,7 @@ git status
 
 要求：
 
-- `git rev-parse --show-toplevel` 必须返回标准仓库根目录（`D:/codex/LLA`，即 `D:\CODEX\LLA`）。
+- `git rev-parse --show-toplevel` 必须返回标准仓库根目录（`E:\Software\LLA-master\LLA-master`）。
 - 记录当前 `HEAD` SHA，验收必须明确 target commit SHA。
 - `git status` 必须 clean（无未提交修改）。
 - 如果当前 HEAD 与指定 commit 不一致，停止开发/验收，不得直接给出 PASS/FAIL。
@@ -39,7 +40,7 @@ git status
 
 - 不允许使用旧 detached worktree、stale commit 作为正式验收基线。
 - 如确需额外 worktree，必须明确用途和目标 commit，不得默认作为正式验收目录。
-- 正式验收必须在标准仓库根目录 `D:\CODEX\LLA` 的指定 SHA 上执行。
+- 正式验收必须在标准仓库根目录 `E:\Software\LLA-master\LLA-master` 的指定 SHA 上执行。
 
 ## 5. 历史教训
 

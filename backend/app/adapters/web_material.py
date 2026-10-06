@@ -192,7 +192,7 @@ class BBCLearningEnglishProvider:
     def _list_episode_urls(self) -> list[str]:
         html = _fetch(self.archive_url)
         links = re.findall(r'href="(/learningenglish/english/features/6-minute-english/ep-[0-9]+)"', html)
-        return sorted(set(f"https://www.bbc.co.uk{link}" for link in links))
+        return sorted({f"https://www.bbc.co.uk{link}" for link in links})
 
     def _fetch_episode(self, url: str) -> tuple[str, str, str]:
         html = _fetch(url)

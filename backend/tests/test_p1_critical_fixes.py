@@ -14,17 +14,16 @@ from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 import pytest
-from fastapi.testclient import TestClient
-
 from app import main as main_module
 from app.adapters.speech import RecognizedSegment
 from app.core.audio_quality import AudioQualityAnalyzer, QualityThresholds
 from app.core.difficulty_progression import DifficultyProgressionService
 from app.core.material_candidates import MaterialCandidateService
-from app.core.material_preparation import MaterialPreparationService
 from app.core.weekly import WeeklyAssessmentService
 from app.db.connection import Database
-from tests.fixtures import DEFAULT_SENTENCES, make_database, make_settings, make_sine_wav
+from fastapi.testclient import TestClient
+
+from tests.fixtures import make_database, make_settings, make_sine_wav
 
 NOW = datetime(2026, 8, 26, 10, 0, 0, tzinfo=UTC)
 DUR_MIN, DUR_MAX = 1.0, 2.0

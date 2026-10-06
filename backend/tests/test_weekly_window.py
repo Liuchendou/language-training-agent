@@ -7,7 +7,6 @@ from datetime import datetime, timedelta
 from pathlib import Path
 
 import pytest
-
 from app.config import Settings
 from app.core.learning_time import LearningTimeService
 from app.db.connection import Database

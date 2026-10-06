@@ -1,6 +1,9 @@
 import pytest
-
-from app.preprocess.material import MaterialPreprocessError, MaterialPreprocessor, TimestampedSentence
+from app.preprocess.material import (
+    MaterialPreprocessError,
+    MaterialPreprocessor,
+    TimestampedSentence,
+)
 
 
 def _sentences() -> list[TimestampedSentence]:

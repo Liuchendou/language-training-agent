@@ -132,7 +132,7 @@ class WeeklyAssessmentService:
         assessment = self.get(week_id)
         dictation_ok = not assessment["dictation_required"] or assessment["dictation_pass"] is True
         dimensions = assessment["reading_dimension_results"]
-        reading_ok = not assessment["reading_required"] or bool(dimensions) and all(dimensions.values())
+        reading_ok = not assessment["reading_required"] or (bool(dimensions) and all(dimensions.values()))
         passed = dictation_ok and reading_ok
         gate_status = WeeklyState.WEEKLY_GATE_PASS.value if passed else WeeklyState.REINFORCEMENT_REQUIRED.value
         reinforcement_status = "NOT_REQUIRED" if passed else WeeklyState.REINFORCEMENT_REQUIRED.value
@@ -374,7 +374,7 @@ class WeeklyAssessmentService:
         ).fetchone()
         dimensions = json.loads(assessment["reading_dimension_results"])
         dictation_ok = not assessment["dictation_required"] or passed
-        reading_ok = not assessment["reading_required"] or bool(dimensions) and all(dimensions.values())
+        reading_ok = not assessment["reading_required"] or (bool(dimensions) and all(dimensions.values()))
         gate_passed = dictation_ok and reading_ok
         connection.execute(
             """

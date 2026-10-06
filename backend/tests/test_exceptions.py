@@ -14,13 +14,13 @@ from pathlib import Path
 from uuid import uuid4
 
 import pytest
-from fastapi.testclient import TestClient
-
 from app import main as main_module
 from app.core.audio_quality import AudioQualityAnalyzer
 from app.core.material_search import MaterialSearchService
 from app.core.reading_service import ReadingService
 from app.db.connection import Database
+from fastapi.testclient import TestClient
+
 from tests.fixtures import DEFAULT_SENTENCES, make_database, make_settings, make_sine_wav
 
 REFERENCE = [(2.0, 12000.0), (0.5, 0.0)]
@@ -109,6 +109,7 @@ class GoodProvider:
 
     def search_next(self, *, exclude_urls, work_dir, asr=None, criteria=None):
         from app.adapters.web_material import MaterialSource
+
         from tests.fixtures import make_sine_wav
 
         wav = self.tmp_path / "good.wav"
@@ -132,7 +133,6 @@ class GoodProvider:
 def test_search_failure_degrades_to_next_provider_and_keeps_state(tmp_path: Path) -> None:
     database = make_database(tmp_path)
     settings = make_settings(tmp_path)
-    create_before = MaterialSearchService(database, settings, providers=[], asr=None)
     from tests.fixtures import create_material
 
     create_material(database, "keep-001")

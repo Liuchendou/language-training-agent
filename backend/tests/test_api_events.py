@@ -1,9 +1,8 @@
 from pathlib import Path
 
-from fastapi.testclient import TestClient
-
 from app import main as main_module
 from app.config import Settings
+from fastapi.testclient import TestClient
 
 
 def test_event_api_drives_and_guards_first_dictation_part(tmp_path: Path) -> None:

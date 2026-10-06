@@ -14,12 +14,12 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 import pytest
-from fastapi.testclient import TestClient
-
 from app import main as main_module
 from app.core.learning_time import LearningTimeService
 from app.core.weekly import WeeklyAssessmentService
 from app.db.connection import Database
+from fastapi.testclient import TestClient
+
 from tests.fixtures import DEFAULT_SENTENCES, create_material, make_database, make_settings
 
 NOW = datetime(2026, 8, 26, 10, 0, 0, tzinfo=UTC)  # Wednesday of ISO week 2026-W35

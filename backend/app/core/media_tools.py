@@ -80,7 +80,7 @@ def resolve_ytdlp(settings: Settings, *, required: bool = True) -> list[str]:
             raise MediaToolError(
                 "未找到 yt-dlp。请运行："
                 f'"{Path(__import__("sys").executable)}" -m pip install yt-dlp'
-            )
+            ) from None
         return []
     return [__import__("sys").executable, "-m", "yt_dlp"]
 

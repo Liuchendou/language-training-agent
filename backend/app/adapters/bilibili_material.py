@@ -135,7 +135,7 @@ class BilibiliMaterialProvider:
             # Landing on the site first establishes the cookies the API expects.
             self._get("https://www.bilibili.com")
             nav = json.loads(self._get("https://api.bilibili.com/x/web-interface/nav"))
-        except Exception as exc:  # noqa: BLE001 - reported to the user verbatim
+        except Exception as exc:
             raise BilibiliSearchError(
                 f"无法连接 B站接口：{type(exc).__name__}: {exc}"
             ) from exc
@@ -171,7 +171,7 @@ class BilibiliMaterialProvider:
             payload = json.loads(self._get(url))
         except BilibiliSearchError:
             raise
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             raise BilibiliSearchError(
                 f"B站搜索请求失败：{type(exc).__name__}: {exc}"
             ) from exc

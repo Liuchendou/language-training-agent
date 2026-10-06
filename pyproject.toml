@@ -6,3 +6,23 @@ testpaths = ["backend/tests"]
 line-length = 100
 target-version = "py312"
 
+[tool.ruff.lint]
+# 显式锁定规则集。ruff 0.16 的默认集是约 300 个具体规则码（不再是旧的 E4/E7/E9/F），
+# 不显式声明会随 ruff 版本升级而漂移，故在此固化。
+select = ["E4", "E7", "E9", "F", "I", "UP", "B", "C4", "SIM", "RUF"]
+ignore = [
+  "RUF001", # 全角标点出现在中文文案字符串中属正常
+  "RUF003", # 同上（出现在注释中）
+  "RUF059", # 测试中解包后只取部分字段，是刻意的可读写法
+  "B905",   # zip 显式 strict 会改变现有行为，需单独评估后再说
+]
+
+[tool.mypy]
+python_version = "3.12"
+files = ["backend/app"]
+# 第三方库（yt-dlp / faster-whisper 等）多数无类型存根，缺失不视为错误。
+ignore_missing_imports = true
+warn_unused_configs = true
+warn_redundant_casts = true
+no_implicit_optional = true
+

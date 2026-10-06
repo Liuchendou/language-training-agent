@@ -15,11 +15,11 @@ from pathlib import Path
 from uuid import uuid4
 
 import pytest
-
 from app.core.dictation_service import DictationService
-from app.core.states import MaterialState, TransitionError
+from app.core.states import TransitionError
 from app.core.training_events import TrainingEventService
 from app.db.connection import Database
+
 from tests.fixtures import DEFAULT_SENTENCES, create_material, make_database
 
 
@@ -178,7 +178,7 @@ def test_conflict_leaves_no_state_change(tmp_path: Path) -> None:
     db = make_database(tmp_path)
     create_material(db, "m1")
     dictation = _drive_to_dictation(db)
-    first = dictation.submit(
+    dictation.submit(
         material_id="m1", sentence_id=_sid("m1", 0),
         user_text=DEFAULT_SENTENCES[0], listen_count=1, operation_id="op-c",
     )

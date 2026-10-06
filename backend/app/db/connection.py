@@ -8,7 +8,6 @@ from contextlib import contextmanager
 from app.config import Settings
 from app.core.dictation import normalize_for_match
 
-
 SCHEMA_PATH = __file__.replace("connection.py", "schema.sql")
 
 

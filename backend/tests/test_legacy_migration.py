@@ -13,11 +13,11 @@ from pathlib import Path
 from uuid import uuid4
 
 import pytest
-
 from app.core.dictation import normalize_for_match
 from app.core.dictation_service import DictationService
 from app.core.training_events import TrainingEventService
 from app.db.connection import Database
+
 from tests.fixtures import DEFAULT_SENTENCES, create_material, make_database
 
 

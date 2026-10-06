@@ -6,12 +6,11 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
-
 from app.adapters.speech import RecognizedSegment
 from app.adapters.web_material import align_sentences, split_sentences
-from app.core.material_recommender import MaterialRecommender, SearchCriteria
+from app.core.material_recommender import MaterialRecommender
 from app.core.material_search import MaterialSearchService
-from app.db.connection import Database
+
 from tests.fixtures import create_material, make_database, make_settings
 
 
@@ -79,6 +78,7 @@ class FakeProvider:
             "criteria": criteria,
         }
         from app.adapters.web_material import MaterialSource
+
         from tests.fixtures import make_sine_wav
 
         self._count += 1

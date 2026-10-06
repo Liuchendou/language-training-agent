@@ -4,7 +4,6 @@ import os
 from dataclasses import dataclass
 from pathlib import Path
 
-
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 
@@ -55,7 +54,7 @@ class Settings:
     import_dir_name: str = "imports"
 
     @classmethod
-    def from_env(cls) -> "Settings":
+    def from_env(cls) -> Settings:
         project_root = Path(os.getenv("LTA_PROJECT_ROOT", str(PROJECT_ROOT))).resolve()
         data_root = project_root / "data"
         return cls(

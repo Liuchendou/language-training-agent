@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import sqlite3
 
-from app.preprocess.material import MaterialSpec
 from app.db.connection import Database
+from app.preprocess.material import MaterialSpec
 
 
 class MaterialExistsError(ValueError):

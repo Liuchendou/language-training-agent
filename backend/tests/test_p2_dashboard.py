@@ -6,10 +6,10 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
-
 from app.core.dashboard import FIRST_COMPREHENSION_MAPPING, DashboardService
 from app.db.connection import Database
-from tests.fixtures import make_database, make_settings
+
+from tests.fixtures import make_database
 
 
 def _seed_material(db: Database, material_id: str = "dash-m1", sentences: int = 6) -> None:

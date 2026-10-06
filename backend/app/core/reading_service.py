@@ -17,7 +17,7 @@ from uuid import uuid4
 from app.adapters.audio import AudioAnalyzer, WaveAudioAnalyzer
 from app.config import Settings
 from app.core.progress import utc_now
-from app.core.reading_scoring import ReadingRuleEngine, ReadingThresholds, ReadingScore
+from app.core.reading_scoring import ReadingRuleEngine, ReadingScore, ReadingThresholds
 from app.core.states import MaterialState, TransitionError
 from app.db.connection import Database
 

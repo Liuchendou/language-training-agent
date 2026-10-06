@@ -7,11 +7,10 @@ from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 import pytest
-
 from app.core.difficulty_history import DifficultyHistoryError, DifficultyHistoryService
 from app.core.difficulty_progression import DifficultyProgressionService
 from app.core.weekly import WeeklyAssessmentService
-from app.db.connection import Database
+
 from tests.fixtures import make_database, make_settings
 
 NOW = datetime(2026, 8, 26, 10, 0, 0, tzinfo=UTC)
@@ -54,7 +53,7 @@ def test_events_are_recorded_and_idempotent(tmp_path: Path) -> None:
     assert "WEEKLY_GATE_RECORDED" in types
     assert "STREAK_UPDATED" in types
     # Idempotent: replaying the same event key returns the same row.
-    event = [e for e in events if e["event_type"] == "WEEKLY_GATE_RECORDED"][0]
+    event = next(e for e in events if e["event_type"] == "WEEKLY_GATE_RECORDED")
     replayed = history.record(
         "default", "WEEKLY_GATE_RECORDED",
         stage_before=event["stage_before"], stage_after=event["stage_after"],
@@ -80,7 +79,9 @@ def test_upgrade_flow_emits_eligible_prompted_decided_stage_changed(tmp_path: Pa
     assert {"UPGRADE_ELIGIBLE", "UPGRADE_PROMPTED", "UPGRADE_DECIDED", "STAGE_CHANGED"}.issubset(types)
     eligible_events = [e for e in history.history("default")["events"] if e["event_type"] == "UPGRADE_ELIGIBLE"]
     assert len(eligible_events) == 1, "eligibility is recorded once at the moment it is reached"
-    stage_changed = [e for e in history.history("default")["events"] if e["event_type"] == "STAGE_CHANGED"][0]
+    stage_changed = next(
+        e for e in history.history("default")["events"] if e["event_type"] == "STAGE_CHANGED"
+    )
     assert stage_changed["stage_before"] == "STAGE_1"
     assert stage_changed["stage_after"] == "STAGE_2"
     assert stage_changed["actor"] == "USER"

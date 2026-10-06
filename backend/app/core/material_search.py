@@ -3,8 +3,6 @@ preprocess -> store (Spec 24 provider pipeline)."""
 
 from __future__ import annotations
 
-from pathlib import Path
-
 from app.adapters.speech import WhisperASRProvider
 from app.adapters.web_material import BBCLearningEnglishProvider, MaterialSource
 from app.config import Settings

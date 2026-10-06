@@ -12,8 +12,6 @@ from pathlib import Path
 from uuid import uuid4
 
 import pytest
-from fastapi.testclient import TestClient
-
 from app import main as main_module
 from app.adapters.audio import WaveAudioAnalyzer
 from app.core.reading_scoring import ReadingRuleEngine
@@ -21,6 +19,8 @@ from app.core.reading_service import ReadingService
 from app.core.states import TransitionError
 from app.core.training_events import TrainingEventService
 from app.db.connection import Database
+from fastapi.testclient import TestClient
+
 from tests.fixtures import (
     DEFAULT_SENTENCES,
     create_material,

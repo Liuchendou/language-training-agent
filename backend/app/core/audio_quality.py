@@ -87,7 +87,7 @@ class AudioQualityAnalyzer:
                     rms = math.sqrt(sum(s * s for s in samples) / len(samples)) / 32768.0
                     (speech_rms if rms > 0.01 else silence_rms).append(rms)
                 total_frames = wav_file.getnframes()
-        except (OSError, wave.Error) as exc:
+        except (OSError, wave.Error):
             return AudioQuality(
                 level="Poor",
                 sample_rate=0,
