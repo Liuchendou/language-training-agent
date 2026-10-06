@@ -80,6 +80,9 @@ function WeeklyPanel({ onMessage }) {
     .then(setAssessments)
     .catch(() => onMessage('无法加载周测状态。'))
 
+  // 仅挂载时拉取一次。refresh 每次渲染都会重建，若把它加入依赖数组，
+  // 每次 setState → 重渲染 → 新 refresh → effect 重跑，形成无限请求循环。
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { refresh() }, [])
 
   const open = (assessment) => {

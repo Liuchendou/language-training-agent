@@ -99,7 +99,7 @@ function ImportFromUrlPanel({ onImported, onMessage }) {
         <p className="notice error">
           本机还缺少提取所需的组件，提交后会失败：
           <br />
-          {capabilities.problems.map((problem) => <span key={problem}>· {problem}<br /></span>)}
+          {(capabilities.problems || []).map((problem) => <span key={problem}>· {problem}<br /></span>)}
         </p>
       )}
 

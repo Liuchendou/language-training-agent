@@ -30,6 +30,8 @@ function P2Dashboard({ onMessage }) {
       .catch(() => onMessage('难度历史读取失败。'))
   }
 
+  // 仅挂载时拉取一次。refresh 每次渲染都会重建，加入依赖会形成无限请求循环。
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { refresh() }, [])
 
   const backfill = () => {
@@ -69,6 +71,8 @@ function P2Dashboard({ onMessage }) {
       .catch(() => onMessage('配置读取失败。'))
   }
 
+  // 同上：仅挂载时读取一次配置。
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { loadConfig() }, [])
 
   const runSuggestions = () => {
@@ -225,7 +229,7 @@ function P2Dashboard({ onMessage }) {
         </div>
         <div className="dictation-actions">
           <button className="secondary" onClick={() => fetch('/api/p2/difficulty/downgrade/suggest?scope_id=default', { method: 'POST' }).then((r) => r.json()).then((p) => onMessage(`降级建议检查：${p.suggested ? '触发' : '未触发'}（${p.reason}）`)).catch((e) => onMessage(e.message))}>检查降级建议</button>
-          <button className="secondary" onClick={() => fetch('/api/p2/difficulty/downgrade/request?scope_id=default', { method: 'POST' }).then((r) => r.json()).then((p) => onMessage('降级请求已记录')).catch((e) => onMessage(e.message))}>请求降级</button>
+          <button className="secondary" onClick={() => fetch('/api/p2/difficulty/downgrade/request?scope_id=default', { method: 'POST' }).then((r) => r.json()).then(() => onMessage('降级请求已记录')).catch((e) => onMessage(e.message))}>请求降级</button>
           <button className="secondary" onClick={() => fetch('/api/p2/difficulty/downgrade/confirm?scope_id=default', { method: 'POST' }).then((r) => r.json()).then((p) => onMessage(`降级已确认：${p.stage_before} → ${p.stage_after}`)).catch((e) => onMessage(e.message))}>确认降级</button>
         </div>
       </div>

@@ -51,11 +51,19 @@ function DictationPanel({ materialId, context, onTransition, onPartComplete, onM
   const doneCount = sentences.filter((sentence) => sentence.is_exact).length
 
   // 服务端恢复：进入新句时用后端返回的 listen_count 初始化，不覆盖服务端事实。
+  //
+  // 这里刻意保留「effect + 同步 setState」，且依赖项只写 sentence_id 而不是 current：
+  //   1) 若把 current 放进依赖，每次 context 刷新（对象重建）都会重置本地
+  //      listen_count，把用户已经累加的收听次数抹掉——这是行为性倒退，不是清理；
+  //   2) set-state-in-effect 提示的额外渲染确实存在，但此处的 state 无法由 props
+  //      直接派生：它需要服务端初始值，之后还要被用户操作递增（"再听一次"）。
+  /* eslint-disable react-hooks/set-state-in-effect, react-hooks/exhaustive-deps */
   useEffect(() => {
     if (current) {
       setListenCount(current.listen_count || 0)
     }
   }, [current?.sentence_id])
+  /* eslint-enable react-hooks/set-state-in-effect, react-hooks/exhaustive-deps */
 
   // Defensive/recovery path only: the normal flow completes a Part atomically
   // inside sentence submit, so this branch is only reached for legacy data

@@ -8,7 +8,9 @@ function writeString(view, offset, text) {
   }
 }
 
-function encodeWav(chunks, sampleRate) {
+// 导出供单测直接验证 WAV 头结构与采样钳制：这段编码一旦出错，
+// 后端朗读评分会静默拿到损坏的音频，界面上看不出任何异常。
+export function encodeWav(chunks, sampleRate) {
   const total = chunks.reduce((sum, chunk) => sum + chunk.length, 0)
   const buffer = new ArrayBuffer(44 + total * 2)
   const view = new DataView(buffer)

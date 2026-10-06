@@ -9,7 +9,7 @@
 // keeping the call sites' existing control flow (payload in, Error out).
 
 export async function readJson(response) {
-  let text = ''
+  let text
   try {
     text = await response.text()
   } catch {
