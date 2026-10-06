@@ -1,0 +1,15 @@
+# Normalize line endings in the repository.
+#
+# Python / JS sources are stored with LF. Windows launchers MUST stay CRLF:
+# a .bat with LF line endings breaks `goto` label parsing.
+* text=auto eol=lf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Binary assets: never touch.
+*.docx binary
+*.png binary
+*.m4a binary
+*.wav binary
+*.mp3 binary
+*.bin binary
