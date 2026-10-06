@@ -6,7 +6,12 @@ backend/tests/tmp-f5/
 .mypy_cache/
 .ruff_cache/
 node_modules/
-dist/
+# 前端构建产物（`npm run build` 的 outDir，vite 默认 frontend/dist）。
+# 这是构建产物而非源码，故不入库；但后端在运行期会挂载它来托管 Web 界面
+# （backend/app/main.py），所以克隆后首次启动前必须先构建一次：
+#   cd frontend && npm install && npm run build
+# 直接双击根目录 start-local.bat 亦可，它会在缺失时自动构建。
+frontend/dist/
 *.sqlite3
 # Local binaries (ffmpeg ~317 MB, faster-whisper model ~145 MB): too large for
 # version control and platform-specific. See README for how to fetch them.

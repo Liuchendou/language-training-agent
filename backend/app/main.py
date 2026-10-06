@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -28,6 +29,7 @@ from app.core.weekly import WeeklyAssessmentService
 from app.db.connection import Database
 
 settings = Settings.from_env()
+logger = logging.getLogger(__name__)
 
 
 @asynccontextmanager
@@ -89,6 +91,16 @@ async def no_cache_html(request, call_next):
 # Serve the built frontend from the same process (no file watcher, immune to
 # the Vite dev-server crash on Windows). API routes take precedence; the
 # static mount is the fallback for everything else.
+#
+# frontend/dist is a build artifact and is deliberately not committed, but the
+# single-process deployment still depends on it at runtime — so its absence is
+# reported loudly instead of silently 404-ing the whole UI.
 _frontend_dist = settings.project_root / "frontend" / "dist"
 if _frontend_dist.is_dir():
     app.mount("/", StaticFiles(directory=str(_frontend_dist), html=True), name="frontend")
+else:
+    logger.warning(
+        "frontend/dist 不存在：Web 界面不会被托管（/api/* 仍可访问）。"
+        "首次使用请先构建：cd frontend && npm install && npm run build；"
+        "或直接双击项目根目录的 start-local.bat（缺失时会自动构建）。"
+    )

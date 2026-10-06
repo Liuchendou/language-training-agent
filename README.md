@@ -37,13 +37,25 @@ P0 本地优先的语言训练工作区。当前已具备素材预处理、可�
    .\.venv\Scripts\python.exe -m uvicorn app.main:app --app-dir backend --reload
    ```
 
-3. 构建前端（后端会直接托管 `frontend/dist`；Windows 上 Vite dev server 有崩溃风险，故默认不使用）：
+3. 构建前端 —— **这是启动的硬前提**：后端在启动时挂载 `frontend/dist` 来托管 Web 界面，而该目录是构建产物、不随仓库分发（`.gitignore` 已忽略）。缺失时后端仍会启动并继续服务 `/api/*`，但会打印明确告警、根路径 404。Windows 上 Vite dev server 有崩溃风险，故默认不使用：
 
    ```powershell
    cd frontend
    npm install
    npm run build
    ```
+
+## 配置
+
+全部可配置项见根目录的 `.env.example`（28 个 `LTA_*` 变量，每项都标注了内置默认值）。
+
+⚠️ 应用**不会自动读取** `.env` 文件——代码只读进程环境变量。要让配置文件生效，需显式传入：
+
+```powershell
+.\.venv\Scripts\python.exe -m uvicorn app.main:app --app-dir backend --env-file .env
+```
+
+`--env-file` 依赖 `python-dotenv`，已随 `uvicorn[standard]` 一并安装；也可以直接在 shell 里设置环境变量后再启动。
 
 ## 质量门
 

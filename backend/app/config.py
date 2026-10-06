@@ -83,6 +83,7 @@ class Settings:
             ytdlp_path=os.getenv("LTA_YTDLP", ""),
             whisper_model_size=os.getenv("LTA_WHISPER_MODEL", "base"),
             whisper_language=os.getenv("LTA_WHISPER_LANGUAGE", ""),
+            whisper_model_dir=os.getenv("LTA_WHISPER_MODEL_DIR", ""),
             hf_endpoint=os.getenv("LTA_HF_ENDPOINT", "https://hf-mirror.com"),
             import_dir_name=os.getenv("LTA_IMPORT_DIR", "imports"),
         )
