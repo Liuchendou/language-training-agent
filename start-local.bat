@@ -14,7 +14,13 @@ rem ---------------------------------------------------------------
 if exist ".venv\Scripts\python.exe" (
   set "PYTHON=.venv\Scripts\python.exe"
 ) else (
-  set "PYTHON=python"
+  echo.
+  echo [ERROR] .venv was not found, so the environment is not ready yet.
+  echo         Double-click setup.bat first. It is a one-time setup
+  echo         ^(about 460 MB of downloads^). See docs\transfer-guide.md
+  echo.
+  pause
+  exit /b 1
 )
 
 echo [1/3] Checking whether the service is already running on port 8000...

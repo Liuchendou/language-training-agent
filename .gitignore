@@ -13,7 +13,7 @@ node_modules/
 # 直接双击根目录 start-local.bat 亦可，它会在缺失时自动构建。
 frontend/dist/
 *.sqlite3
-# Local binaries (ffmpeg ~317 MB, faster-whisper model ~145 MB): too large for
+# Local binaries (ffmpeg ~303 MB, faster-whisper model ~142 MB): too large for
 # version control and platform-specific. See README for how to fetch them.
 tools/
 data/recordings/*

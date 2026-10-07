@@ -14,9 +14,11 @@ P0 本地优先的语言训练工作区。当前已具备素材预处理、可�
 
 ## 本地启动
 
-推荐直接双击根目录的 `start-local.bat`：单进程启动（后端 8000 端口同时托管已构建的 `frontend/dist`），自动等待健康检查后打开浏览器，无需 Vite dev server。
+**新机器首次使用**：双击根目录的 `setup.bat` 做一次性环境准备（Python 依赖 → ffmpeg 与语音模型 → 前端构建，全部幂等可重跑）。完整说明见 [docs/transfer-guide.md](docs/transfer-guide.md)。
 
-以下为手动步骤：
+**日常启动**：双击根目录的 `start-local.bat`——单进程启动（后端 8000 端口同时托管已构建的 `frontend/dist`），自动等待健康检查后打开浏览器，无需 Vite dev server。
+
+以下为手动步骤（等价于上面两个脚本所做的事）：
 
 1. 创建虚拟环境并安装后端依赖：
 
@@ -45,6 +47,21 @@ P0 本地优先的语言训练工作区。当前已具备素材预处理、可�
    npm run build
    ```
 
+4. 补齐外部依赖（ffmpeg 与语音模型）—— **两者都不随仓库分发**（整个 `tools/` 约 444 MB，已被 `.gitignore` 忽略）。缺失时服务照常启动，但相关功能不可用：
+
+   | 依赖 | 缺失后果 | 影响范围 |
+   |---|---|---|
+   | `ffmpeg` / `ffprobe` | 下载后的转码步骤直接失败 | 「贴链接导入」与自动搜索素材 |
+   | faster-whisper 模型 | 首次转写会尝试从 Hugging Face 下载，网络受限时超时 | 同上（生成句级时间戳） |
+
+   **ffmpeg** —— 三种方式任选其一，代码的查找顺序就是 `LTA_FFMPEG` → `PATH` → 项目内 `tools/ffmpeg/bin/`（见 `backend/app/core/media_tools.py`）：
+
+   - 装进 PATH：`winget install "FFmpeg (Essentials Build)"`（也可用 `choco install ffmpeg` / `scoop install ffmpeg-essentials`）。
+   - 便携版放进项目：从 gyan.dev 的 builds 页（<https://www.gyan.dev/ffmpeg/builds/>）下载 `ffmpeg-release-essentials.zip`，把解压后 `bin/` 里的 `ffmpeg.exe`、`ffprobe.exe`、`ffplay.exe` 放到 `tools/ffmpeg/bin/`。本机实测版本串为 `ffmpeg version 9.0.2-essentials_build-www.gyan.dev`。
+   - 已装在别处：设 `LTA_FFMPEG` 指向 `ffmpeg.exe` 的绝对路径。
+
+   **语音模型** —— 目录名跟着 `LTA_WHISPER_MODEL` 走（默认 `base`），即 `tools/models/faster-whisper-base/`，内容需含 `config.json` + `model.bin` + `tokenizer.json` + `vocabulary.txt`；也可以用 `LTA_WHISPER_MODEL_DIR` 指向任意位置的同类目录（该项优先于项目内副本）。**不提供也能跑**：会退回按模型名自动下载，可用 `LTA_HF_ENDPOINT` 指定镜像（默认已指向 `hf-mirror.com`）。
+
 ## 配置
 
 全部可配置项见根目录的 `.env.example`（28 个 `LTA_*` 变量，每项都标注了内置默认值）。
@@ -56,6 +73,28 @@ P0 本地优先的语言训练工作区。当前已具备素材预处理、可�
 ```
 
 `--env-file` 依赖 `python-dotenv`，已随 `uvicorn[standard]` 一并安装；也可以直接在 shell 里设置环境变量后再启动。
+
+## 部署到另一台电脑
+
+**逐步操作 + 故障排查见 [docs/transfer-guide.md](docs/transfer-guide.md)。** 要点如下。
+
+仓库里只有源码（136 个文件）。`.venv/`、`node_modules/`、`frontend/dist/`、`tools/`、`data/*.sqlite3` 都是本机构建或运行时产物，不在版本库内。新机器上需要：
+
+1. 装好 **Python ≥ 3.12**（下限由 `numpy==2.5.3` 声明的 `Requires-Python` 决定，是已装依赖中最高的一条；本机实测 3.13.9）与 **Node.js**——分别用于后端运行与前端构建。
+2. 双击 `setup.bat`：重建 `.venv`、装后端依赖、下载 ffmpeg 与语音模型、构建前端。**不要直接拷贝 `.venv/`**（其内部脚本记录的是原机器的绝对路径）。注意 ffmpeg 一项的下载速度可能很慢，替代路径见指南 4.2 节。
+3. 双击 `start-local.bat` 启动，再自检环境：`GET /api/materials/import-capabilities`。本机实测返回：
+
+   ```json
+   {"ffmpeg":true,"yt_dlp":true,"faster_whisper":true,"problems":[],"whisper_model":"...\\tools\\models\\faster-whisper-base","whisper_model_local":true,"ready":true}
+   ```
+
+   `ready` 为 `false` 时读 `problems` 数组，里面逐条写明缺哪一项、怎么补；`whisper_model_local` 为 `false` 表示模型还没落到本地，首次识别会联网下载。
+
+**平台差异**：`start-local.bat` 与 `tools/ffmpeg/bin/*.exe` 是 Windows 专用。macOS / Linux 上需自行安装 ffmpeg（会命中 `PATH` 分支），并改用上面「本地启动」的手动命令。
+
+**数据隔离**：`data/language_training.sqlite3` 不在仓库内，新机器首次启动会自动建空库，不会带入原机器的训练与素材记录。
+
+**部署到公网（让手机浏览器访问同一套后端）**：**尚未执行**。方案对比、改造清单与开工前待确认事项见 [docs/cloud-backend-plan.md](docs/cloud-backend-plan.md)。
 
 ## 质量门
 
